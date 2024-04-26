@@ -8,18 +8,14 @@ import axios from 'axios';
 function Home() {
     const [tasks, setTasks] = useState([]);
     const [notifications, setNotifications] = useState([]);
+    const [number, setNumber] = useState(null); 
 
     useEffect(() => {
-
-        // Notification functionality. Adds a notification if a task is overdue.
-        
         const fetchTasks = async () => {
             try {
                 console.log('Fetching tasks...');  // For logging purposes
                 const response = await axios.get('http://localhost:5001/api/tasks/todos');
                 setTasks(response.data);
-
-                // For some reason the notifications were printed twice. Had to add a functionality to remove duplicates.
 
                 const newNotifications = response.data.reduce((acc, task) => {
                     if (new Date(task.endDate) < new Date()) {
@@ -32,12 +28,25 @@ function Home() {
                 }, []);
 
                 setNotifications(prev => [...new Set([...prev, ...newNotifications])]);
+
+                //Fetch the amount of tasks the user has created (statistics)
+                try {
+                    console.log('Fetching number...'); // For logging purposes
+                    const response = await axios.get('http://localhost:5118/Tasks/getNumber');
+                    console.log('Number fetched:', response.data); // Log the fetched number
+                    setNumber(response.data.number);
+                
+                } catch (error) {
+                    console.error('Failed to fetch number:', error);
+                }
+                
             } catch (error) {
                 console.error('Failed to fetch tasks:', error);
                 setNotifications(prev => [...new Set([...prev, "Failed to fetch tasks."])]);
             }
         };
-        fetchTasks(); // Display tasks
+
+        fetchTasks();
     }, []);
 
     return (
@@ -61,6 +70,14 @@ function Home() {
                     ))}
                 </ul>
             </div>
+            <div className="number-section">
+                {number !== null ? (
+                    <h3>You have created {number} tasks so far.</h3>
+                ) : (
+                    <h3>Loading task amount...</h3>
+                )}
+            </div>
+
         </div>
     );
 }
