@@ -26,6 +26,7 @@ function Tasks() {
     fetchStatuses();
   }, []);
 
+  // Fetch all activities for task creation.
   const fetchActivities = async () => {
       try {
           const response = await axios.get('http://localhost:5001/api/activities');
@@ -35,6 +36,7 @@ function Tasks() {
       }
   };
 
+  // Fetch all statuses for task creation.
   const fetchStatuses = async () => {
     try {
       const { data } = await axios.get('http://localhost:5001/statuses');
@@ -47,6 +49,7 @@ function Tasks() {
     }
   };
 
+  // Fetch all tasks for displaying purposes.
   const fetchTodos = async () => {
     try {
       const { data } = await axios.get('http://localhost:5001/todos');
@@ -64,12 +67,14 @@ function Tasks() {
       }));
   };
 
+  // Add a new task using web api.
   const addTodo = async () => {
     const newTask = {
         ...task,
         tags: task.tags.split(',').map(tag => tag.trim()),
-        activityId: task.activityId // Make sure this is included
+        activityId: task.activityId
     };
+
     try {
         const { data } = await axios.post('http://localhost:5001/todos', newTask);
         setTodos([...todos, data]);
@@ -79,32 +84,34 @@ function Tasks() {
     }
   };
 
-
+  // Handle task editing.
   const editTodo = (todo) => {
     setEditId(todo._id);
     setTask({
       ...todo,
-      tags: todo.tags.join(', ') // Handle array of tags
+      tags: todo.tags.join(', ')
     });
   };
 
+  // Save an edited task.
   const saveTodo = async () => {
-    const updatedTask = {
-        ...task,
-        tags: task.tags.split(',').map(tag => tag.trim()),
-        activityId: task.activityId // Include activityId in updates
-    };
-    try {
-        const { data } = await axios.put(`http://localhost:5001/todos/${editId}`, updatedTask);
-        const updatedTodos = todos.map(todo => (todo._id === editId ? data : todo));
-        setTodos(updatedTodos);
-        setEditId(null);
-        setTask({ name: '', content: '', startDate: '', endDate: '', tags: '', status: '', activityId: '' });
-    } catch (error) {
-        console.error('Error saving task:', error);
-    }
-};
+      const updatedTask = {
+          ...task,
+          tags: task.tags.split(',').map(tag => tag.trim()),
+          activityId: task.activityId
+      };
+      try {
+          const { data } = await axios.put(`http://localhost:5001/todos/${editId}`, updatedTask);
+          const updatedTodos = todos.map(todo => (todo._id === editId ? data : todo));
+          setTodos(updatedTodos);
+          setEditId(null);
+          setTask({ name: '', content: '', startDate: '', endDate: '', tags: '', status: '', activityId: '' });
+      } catch (error) {
+          console.error('Error saving task:', error);
+      }
+  };
 
+  // Delete a task by id.
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`http://localhost:5001/todos/${id}`);

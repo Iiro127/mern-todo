@@ -1,9 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './Home'; // Import the Home component
-import Tasks from './Tasks'; // Import the Tasks component
+import Home from './Home';
+import Tasks from './Tasks';
 import Activities from './Activities';
 
+/*
+  Contains the navigation bar at the top of the UI. Landing page for the app is Home.js
+*/
 function App() {
   return (
     <Router>

@@ -1,6 +1,5 @@
-// routes/activityRoutes.js
 const express = require('express');
-const Activity = require('./models/activity');  // Adjust path as needed
+const Activity = require('./models/activity');
 const router = express.Router();
 
 // Post a new activity
@@ -24,6 +23,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Delet an activity by id
 router.delete('/:id', async (req, res) => {
   try {
       const { id } = req.params;

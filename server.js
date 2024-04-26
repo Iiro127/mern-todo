@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const taskRoutes = require('./taskRoutes');
 const Todo = require('./models/todo');
-const activityRoutes = require('./activityRoutes');  // Adjust path as needed
+const activityRoutes = require('./activityRoutes');
 
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // For parsing application/json
+app.use(express.json());
 
 const PORT = process.env.PORT || 5001;
 
@@ -22,7 +22,7 @@ mongoose.connection.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-
+// Schema for statuses. Includes available statuses for the user to choose.
 const statusSchema = new mongoose.Schema({
   title: String,
   style: String, 
@@ -36,6 +36,7 @@ const initialStatuses = [
   { title: 'Cancelled', style: 'bg-danger text-white' }
 ];
 
+// Add statuses for selection.
 async function seedStatuses() {
   const existingCount = await Status.countDocuments();
   if (existingCount === 0) {
@@ -43,7 +44,6 @@ async function seedStatuses() {
     console.log('Statuses seeded!');
   }
 }
-
 
 // Routes
 app.get('/todos', async (req, res) => {
@@ -61,6 +61,7 @@ app.get('/statuses', async (req, res) => {
 });
 
 
+// Posts a new task to the MongoDB database.
 app.post('/todos', async (req, res) => {
   const { name, content, startDate, endDate, tags, status, activity } = req.body;
   if (!name || !content) {
@@ -73,7 +74,7 @@ app.post('/todos', async (req, res) => {
       endDate,
       tags,
       status,
-      activity  // Ensure this is correctly handled
+      activity 
   });
   try {
       await newTodo.save();
@@ -84,8 +85,7 @@ app.post('/todos', async (req, res) => {
   }
 });
 
-
-
+// Finds a task by parameters.
 app.put('/todos/:id', async (req, res) => {
   try {
     const updatedTodo = await Todo.findByIdAndUpdate(
@@ -131,6 +131,7 @@ app.delete('/todos/:id', async (req, res) => {
   }
 });
 
+// Import routing for tasks and activities.
 app.use('/api/tasks', taskRoutes);
 app.use('/api/activities', activityRoutes);
 

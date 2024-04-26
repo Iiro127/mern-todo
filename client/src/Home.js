@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+/*
+    Home page. Also serves the role of the landing page.
+*/
+
 function Home() {
     const [tasks, setTasks] = useState([]);
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
+
+        // Notification functionality. Adds a notification if a task is overdue.
+        
         const fetchTasks = async () => {
             try {
-                console.log('Fetching tasks...');  // Log when the fetch starts
+                console.log('Fetching tasks...');  // For logging purposes
                 const response = await axios.get('http://localhost:5001/api/tasks/todos');
                 setTasks(response.data);
 
@@ -30,7 +37,7 @@ function Home() {
                 setNotifications(prev => [...new Set([...prev, "Failed to fetch tasks."])]);
             }
         };
-        fetchTasks();
+        fetchTasks(); // Display tasks
     }, []);
 
     return (

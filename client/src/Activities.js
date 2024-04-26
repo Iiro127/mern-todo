@@ -11,11 +11,13 @@ function Activities() {
     fetchActivities();
   }, []);
 
+  // Calls the API to fetch activities from the database.
   const fetchActivities = async () => {
     const { data } = await axios.get('http://localhost:5001/api/activities');
     setActivities(data);
   };
 
+  // Logic for adding a new activity.
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -27,6 +29,7 @@ function Activities() {
     }
   };
 
+  // Deletes an activity by id.
   const deleteActivity = async (id) => {
       try {
           await axios.delete(`http://localhost:5001/api/activities/${id}`);
